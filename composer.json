@@ -1,0 +1,30 @@
+{
+    "name": "quansitech/qscmf-api",
+    "description": "qscmf library api rest",
+    "type": "library",
+    "keywords": ["qscmf", "api", "rest"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "tiderjian",
+            "email": "tider_yatsen@hotmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.2",
+        "tiderjian/think-core": "^11.22",
+        "zircote/swagger-php": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "QscmfApi\\": "src/"
+        }
+    },
+    "extra": {
+        "qscmf": {
+            "providers": [
+                "QscmfApi\\QscmfApiProvider"
+            ]
+        }
+    }
+}
