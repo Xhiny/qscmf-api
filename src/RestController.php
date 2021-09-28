@@ -215,6 +215,7 @@ class RestController extends CusController{
         if(empty($data))  return '';
         if('json' == $type) {
             // 返回JSON数据格式到客户端 包含状态信息
+            C("QSCMFAPI_HTML_DECODE_RES", null, true) && $data = $this->_htmlDecode($data);
             $data = json_encode($data);
         }elseif('xml' == $type){
             // 返回xml格式数据
@@ -226,6 +227,17 @@ class RestController extends CusController{
         return $data;
     }
 
+    protected function _htmlDecode($data){
+        if (is_array($data)){
+            foreach ($data as $k => &$v){
+                $v = $this->_htmlDecode($v);
+            }
+            return $data;
+        }
+        else{
+            return is_string($data) && !isJson($data) ? htmlspecialchars_decode($data) : $data;
+        }
+    }
 
     /**
      * 设置页面输出的CONTENT_TYPE和编码
