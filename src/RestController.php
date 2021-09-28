@@ -215,7 +215,7 @@ class RestController extends CusController{
         if(empty($data))  return '';
         if('json' == $type) {
             // 返回JSON数据格式到客户端 包含状态信息
-            C("QSCMFAPI_HTML_DECODE_RES", null, true) && $data = $this->_htmlDecode($data);
+            C("QSCMFAPI_HTML_DECODE_RES", null, false) && $data = $this->_htmlDecode($data);
             $data = json_encode($data);
         }elseif('xml' == $type){
             // 返回xml格式数据
