@@ -144,6 +144,7 @@ class DemoController extends RestController
 | QSCMFAPI_CUS_SESSION_EXPIRE | CusSession超时时间设置    | 3600                                                         |
 | QSCMFAPI_REST_USER_MODEL    | 存放用户信息的model       |                                                              |
 | QSCMFAPI_AUTH_ID_COLUMN     | 用户标识对应的字段        |                                                              |
+| QSCMFAPI_HTML_DECODE_RES    | 接口返回的html特殊字符串是否需要反转义，false 否 true 是   | false                                                              |
 
 
 
