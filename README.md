@@ -124,7 +124,7 @@ class DemoController extends RestController
 
 | 方法名                | 说明                   | 参数                                                         | 返回值                                                       |
 | :-------------------- | :--------------------- | :----------------------------------------------------------- | ------------------------------------------------------------ |
-| response              | 返回请求内容           | message  提示信息<br />status 类型标记<br />data 返回的具体内容<br />code http状态码，默认值 200 | 返回json或者xml等格式的字符串（根据请求的资源类型而定）<br />{  'info': 'message内容', 'status': 1, 'data': 'data的json格式内容'} |
+| response              | 返回请求内容           | message  提示信息<br />status 类型标记<br />data 返回的具体内容<br />code http状态码，默认值 200<br />extra_res_data 额外需要返回的数据，默认为空数组 | 返回json或者xml等格式的字符串（根据请求的资源类型而定）<br />{  'info': 'message内容', 'status': 1, 'data': 'data的json格式内容', 'extra_res_data':'自定义返回内容'} |
 | checkRequired         | 必填验证               | data 需要验证的数组<br />required_list 必填的字段设置，有两种格式，直接举例说明： 1. [ 'id', 'name'] 表示id, name字段都是必填，如果没有填写，自动返回"id必填"这样的错误提示。 2. [ 'title'=> '文章标题', 'type' => '文章类型'], 表示 title, type都是必填字段，后面的value值表示对应字段的中文描述，如没有传递type字段，会自动返回“文章类型必填”的错误提示，这样用户更容易理解错误信息。 | 验证不通过，直接response错误信息，否则返回true               |
 | CusSession::get       | 读取CusSession         | key 存放在CusSession对应的key值                              | key对应的数据                                                |
 | CusSession::set       | 将数据存放到CusSession | key 存放在CusSession的标识<br />value 需要存放的数据，可以是数组，字符串，数字<br />expire 数据的过期时间 | 返回false表示出错，否则成功                                  |
