@@ -259,13 +259,16 @@ class RestController extends CusController{
         }
     }
 
-    protected function response($message, $status, $data = '', $code = 200) {
+    protected function response($message, $status, $data = '', $code = 200, array $extra_res_data = []) {
         $this->sendHttpStatus($code);
         $return_data['status'] = $status;
         $return_data['info'] = $message;
         $return_data['data'] = $data;
         if(CusSession::$send_flg){
             $return_data['sid'] = CusSession::$sid;
+        }
+        if (!empty($extra_res_data)){
+            $return_data = array_merge($return_data, $extra_res_data);
         }
         qs_exit($this->encodeData($return_data,strtolower($this->_type)));
     }
