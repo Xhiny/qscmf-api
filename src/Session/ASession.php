@@ -3,7 +3,7 @@
 
 namespace QscmfApi\Session;
 
-abstract class ASession implements ISession
+abstract class ASession
 {
     public static $sid = '';
     public $name = null;
