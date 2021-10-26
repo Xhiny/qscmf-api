@@ -15,18 +15,11 @@ class ResetSessionIdBehavior{
     }
 
     protected function isTargetModule(){
-        if (!in_array(strtolower(MODULE_NAME), $this->transcodeApiModule())){
-            return false;
-        }
-
-        return true;
+        return in_array(strtolower(MODULE_NAME), $this->transcodeApiModule());
     }
 
     protected function isCommonSession(){
-        if (!C('QSCMFAPI_CUS_SESSION_TYPE') === \QscmfApi\CusSession::SESSION_TYPE_COMMON){
-            return false;
-        }
-        return true;
+        return C('QSCMFAPI_CUS_SESSION_TYPE') === \QscmfApi\CusSession::SESSION_TYPE_COMMON;
     }
 
     protected function getSid(){
