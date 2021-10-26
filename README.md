@@ -20,6 +20,21 @@ composer require quansitech/qscmf-api
 
 3. sid有过期时间，过期时间可根据CUS_SESSION_EXPIRE配置设定，过期后，验证接口返回401，通知终端必须重新找登录接口进行新的sid签发。
 
+### session类型
+```text
+可通过 QSCMFAPI_CUS_SESSION_TYPE 配置设置session类型，默认为 CusSession。
+
+```
++ CusSession
+  ```text
+  使用默认缓存管理登录态。
+  ```
++ Session
+  ```text
+  使用原生session管理登录态。
+  
+  此类型可以解决情景：若系统已使用原生session管理登录态，且使用接口的终端不支持cookie，就会导致原登录态失效以及使用了登录态的程序也不可以重用。
+  ```
 
 
 ## swagger接口文档工具
@@ -145,6 +160,8 @@ class DemoController extends RestController
 | QSCMFAPI_REST_USER_MODEL    | 存放用户信息的model       |                                                              |
 | QSCMFAPI_AUTH_ID_COLUMN     | 用户标识对应的字段        |                                                              |
 | QSCMFAPI_HTML_DECODE_RES    | 接口返回的html特殊字符串是否需要反转义，false 否 true 是   | false                                                              |
+| QSCMFAPI_CUS_SESSION_TYPE   | session验证类型，可选值 CusSession I Session  | CusSession                           |                                      |
+| QSCMFAPI_MODULE | 若QSCMFAPI_CUS_SESSION_TYPE为Session，需要配置接口模块，多个值使用英文逗号拼接   | Api                           |
 
 
 
