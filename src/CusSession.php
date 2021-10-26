@@ -1,6 +1,8 @@
 <?php
 namespace QscmfApi;
 
+use QscmfApi\Session\ISession;
+
 class CusSession {
 
     const SESSION_TYPE_CUS = 'CusSession';
@@ -11,7 +13,7 @@ class CusSession {
 
     private static $cus_session_obj = null;
 
-    public static function registerSessionCls($cus_session_obj){
+    public static function registerSessionCls(ISession $cus_session_obj){
         self::$cus_session_obj = $cus_session_obj;
     }
 

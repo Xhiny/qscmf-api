@@ -6,7 +6,7 @@ namespace QscmfApi\Session;
 
 use Illuminate\Support\Str;
 
-class CusSession
+class CusSession extends ASession
 {
     public static $sid = '';
     public $name = \QscmfApi\CusSession::SESSION_TYPE_CUS;
