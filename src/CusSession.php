@@ -1,51 +1,29 @@
 <?php
 namespace QscmfApi;
 
-use Illuminate\Support\Str;
-
 class CusSession {
-    //put your code here
+
+    const SESSION_TYPE_CUS = 'CusSession';
+    const SESSION_TYPE_COMMON = 'Session';
+
     public static $sid = '';
     public static $send_flg = false;
 
+    private static $cus_session_obj = null;
+
+    public static function registerSessionCls($cus_session_obj){
+        self::$cus_session_obj = $cus_session_obj;
+    }
+
     public static function set($key, $value, $expire = null){
-        if(empty(self::$sid)){
-            return ;
-        }
-        $data = S(self::$sid);
-        if(is_null($value)){
-            unset($data[$key]);
-        }
-        else{
-            $data[$key] = $value;
-        }
-        if(is_null($expire)){
-            $expire = C('QSCMFAPI_CUS_SESSION_EXPIRE', null, 3600);
-        }
-        return S(self::$sid, $data, $expire);
+        return self::$cus_session_obj->set($key, $value, $expire);
     }
 
     public static function get($key = ''){
-        if(empty(self::$sid)){
-            return ;
-        }
-        $data = S(self::$sid);
-        if($key == ''){
-            return $data;
-        }
-        else{
-            return isset($data[$key]) ? $data[$key] : '';
-        }
+        return self::$cus_session_obj->get($key);
     }
 
     public static function setId($sid = ''){
-        $data = $sid ? S($sid) : '';
-        if($data){
-            S($sid, $data, C('QSCMFAPI_CUS_SESSION_EXPIRE', null, 3600));
-            self::$sid = $sid;
-        }
-        else{
-            self::$sid = Str::uuid()->getHex();
-        }
+        return self::$sid = self::$cus_session_obj->setId($sid);
     }
 }
