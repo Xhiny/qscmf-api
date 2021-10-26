@@ -28,4 +28,15 @@ class CusSession {
     public static function setId($sid = ''){
         return self::$sid = self::$cus_session_obj->setId($sid);
     }
+
+    public static function init(){
+        $type = C('QSCMFAPI_CUS_SESSION_TYPE', null, \QscmfApi\CusSession::SESSION_TYPE_CUS);
+        $class  =   strpos($type,'\\')? $type : 'QscmfApi\\Session\\'.$type;
+        if(class_exists($class)){
+            $session = new $class();
+            self::registerSessionCls($session);
+        }else{
+            E('不存在此session类型:'.$type);
+        }
+    }
 }
