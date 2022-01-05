@@ -140,7 +140,7 @@ class RestController extends CusController{
     }
 
     protected function getVersion(){
-        $word_reg = "/.*version=(\d+(?:\.\d+)?)/";
+        $word_reg = "/.*version=(\d+(?:\.\d+)*)/";
         if(preg_match($word_reg, $_SERVER['HTTP_ACCEPT'], $matches)){
             $this->_version = str_replace('.', '_', $matches[1]);
         }
