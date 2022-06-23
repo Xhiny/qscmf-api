@@ -18,7 +18,11 @@ class Session extends ASession
     
     public static function setId($sid = '')
     {
-        $sid && session_id($sid);
+        if ($sid){
+            session_id($sid);
+        }else{
+            \QscmfApi\CusSession::$send_flg = true;
+        }
         self::$sid = session_id();
         return self::$sid;
     }
