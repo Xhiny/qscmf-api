@@ -70,9 +70,11 @@ class RestController extends CusController{
 
         $this->getVersion();
 
-        $this->route();
-
         //匹配
+    }
+
+    public function index(){
+        $this->route();
     }
 
 
