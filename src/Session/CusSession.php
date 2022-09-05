@@ -49,6 +49,7 @@ class CusSession extends ASession
         }
         else{
             self::$sid = Str::uuid()->getHex();
+            \QscmfApi\CusSession::$send_flg = true;
         }
 
         return self::$sid;
