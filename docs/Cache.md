@@ -51,7 +51,7 @@
       new Response($message,$status,$data,$code,(array)$extra_res_data);
       ```
     
-    + toArray 将对象转为数组，元素为所有属性
+    + toArray 将对象转为数组，键为所有属性
     
     + toJson 将对象转为json字符串，类属性即json属性
 
