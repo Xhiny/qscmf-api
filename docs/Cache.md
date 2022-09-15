@@ -34,6 +34,21 @@
       return new \QscmfApiCommon\Cache\Response('成功', 1, $res);
   }
   ```
+  
+  + \QscmfApiCommon\Cache\Response对象说明
+    + 实例化对象属性说明
+      
+      ```php
+      // string $message 返回信息
+      // int|string $status 接口状态
+      // mixed $data 返回数据
+      // int|string $code 请求状态码，默认为200
+      // array $extra_res_data 额外合并的数据
+      
+      new Response($message,$status,$data,$code,(array)$extra_res_data);
+      ```
+    + toArray 将对象转为数组，元素为所有属性
+    + toJson 将对象转为json字符串，类属性即json属性
 
 + 配置模型层*relate_api_controllers*属性，数据变动时清空相关接口的缓存数据
   
@@ -112,6 +127,14 @@
   ```
 
 缓存数据的数据结构为*hash*，根据接口分组，不同的请求参数为一个*member*
+
+```php
+// 只有参数有值时有效，如以下url实际为同一个member
+
+"http://qscmf.qs.com/IntranetApi/Demo?id=1&name=&nick_name=&page=&per_page="
+
+"http://qscmf.qs.com/IntranetApi/Demo?id=1"
+```
 
 如缓存前缀*prefix*为*qs_cmf*，模块为*Api*，控制器*DemoController*的缓存键值：
 *qs_cmf_Api_Controller_DemoController*
