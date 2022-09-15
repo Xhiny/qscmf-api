@@ -39,13 +39,15 @@
     
     + 实例化对象属性说明
       
-      ```php
-      // string $message 返回信息
-      // int|string $status 接口状态
-      // mixed $data 返回数据
-      // int|string $code 请求状态码，默认为200
-      // array $extra_res_data 额外合并的数据
+      | 参数名称           | 类型           | 是否必填 | 说明      | 默认值 |
+      |:-------------- |:------------ | ---- |:------- | --- |
+      | message        | string       | 是    | 返回信息    |     |
+      | status         | int I string | 是    | 接口状态    |     |
+      | data           | mixed        | 否    | 返回数据    | ''  |
+      | code           | int I string | 否    | 返回请求状态码 | 200 |
+      | extra_res_data | array        | 否    | 额外合并的数据 | []  |
       
+      ```php
       new Response($message,$status,$data,$code,(array)$extra_res_data);
       ```
     
