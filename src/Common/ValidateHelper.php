@@ -1,5 +1,5 @@
 <?php
-namespace QscmfApi;
+namespace QscmfApiCommon;
 
 trait ValidateHelper{
 
