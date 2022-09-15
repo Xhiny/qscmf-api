@@ -16,7 +16,7 @@
 
 + 将Api缓存机制开关打开，详情请看对应的Api文档
 
-+ 配置接口缓存策略，符合策略则设置缓存，[查看缓存策略说明](https://github.com/quansitech/qscmf-api/blob/master/docs/Cache.md#%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5%E8%AF%B4%E6%98%8E)
++ 配置接口缓存策略，符合策略则设置缓存，[查看缓存策略说明](https://github.com/quansitech/qscmf-api/blob/master/docs/Cache.md#缓存策略说明)
   
   ```php
   // 不同版本的接口需要不同的缓存策略
