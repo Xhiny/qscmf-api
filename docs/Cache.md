@@ -16,7 +16,7 @@
 
 + 将Api缓存机制开关打开，详情请看对应的Api文档
 
-+ 配置接口缓存策略，符合策略则设置缓存，详情查看缓存策略说明
++ 配置接口缓存策略，符合策略则设置缓存，[查看缓存策略说明](https://github.com/quansitech/qscmf-api/blob/master/docs/Cache.md#%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5%E8%AF%B4%E6%98%8E)
   
   ```php
   // 不同版本的接口需要不同的缓存策略
@@ -26,7 +26,7 @@
   ];
   ```
 
-+ 接口需返回*\QscmfApiCommon\Cache\Response*对象
++ 接口需返回 *\QscmfApiCommon\Cache\Response* 对象
   
   ```php
   public function gets(){
@@ -35,7 +35,8 @@
   }
   ```
   
-  + \QscmfApiCommon\Cache\Response对象说明
+  + *\QscmfApiCommon\Cache\Response* 对象说明
+    
     + 实例化对象属性说明
       
       ```php
@@ -47,7 +48,9 @@
       
       new Response($message,$status,$data,$code,(array)$extra_res_data);
       ```
+    
     + toArray 将对象转为数组，元素为所有属性
+    
     + toJson 将对象转为json字符串，类属性即json属性
 
 + 配置模型层*relate_api_controllers*属性，数据变动时清空相关接口的缓存数据
@@ -73,7 +76,7 @@
 
 | 设置值      | 类型            | 说明        |
 |:-------- |:------------- |:--------- |
-| type     | string        | 缓存类型      |
+| type     | string        | 策略类型      |
 | strategy | string\|array | 参数字段      |
 | cache    | int           | 缓存时间，单位为秒 |
 
