@@ -1,8 +1,7 @@
 <?php
-namespace QscmfApi;
+namespace QscmfApiCommon;
 
 use OpenApi\Generator;
-use OpenApi\Util;
 use Think\Controller;
 
 class HelpController extends Controller {

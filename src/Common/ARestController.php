@@ -1,25 +1,31 @@
 <?php
-namespace QscmfApi;
 
-class RestController extends CusController{
+namespace QscmfApiCommon;
 
+use QscmfApiCommon\Cache\FuncRunner;
+
+abstract class ARestController extends \Think\Controller
+{
     use ValidateHelper;
 
-    protected $_method = ''; // 当前请求类型
-    protected $_type   = ''; // 当前资源类型
-    protected $_version = ''; //请求接口版本号
+    protected FuncRunner $fun_runner_cls; // 接口执行类
+    protected array $cache_strategy = []; // 缓存策略
+
+    protected string $_method = ''; // 当前请求类型
+    protected string $_type   = ''; // 当前资源类型
+    protected string $_version = ''; //请求接口版本号
     protected $noAuthorization = [];  //无需权限检测的api
     // 输出类型
-    protected $restMethodList    = 'get|post|put|delete';
-    protected $restDefaultMethod = 'get';
-    protected $restTypeList      = 'html|xml|json|rss';
-    protected $restDefaultType   = 'json';
-    protected $restOutputType    = [ // REST允许输出的资源类型列表
+    protected string $restMethodList    = 'get|post|put|delete';
+    protected string $restDefaultMethod = 'get';
+    protected string $restTypeList      = 'html|xml|json|rss';
+    protected string $restDefaultType   = 'json';
+    protected array $restOutputType    = [ // REST允许输出的资源类型列表
         'xml'  => 'application/xml',
         'json' => 'application/json',
         'html' => 'text/html',
     ];
-    protected $restInvokeList = [
+    protected array $restInvokeList = [
         'get' => 'gets',
         'post' => 'create',
         'put' => 'update',
@@ -27,19 +33,82 @@ class RestController extends CusController{
     ];
 
     protected $filter;
+    protected CustomConfig $custom_config_obj;
 
     public function __construct()
     {
+        $this->custom_config_obj = $this->initCustomConfig();
+
         parent::__construct();
 
-        if(env("QSCMFAPI_MP_MAINTENANCE")){
-            $this->response('系统维护中', 0, [], 503);
+        $this->handleMaintenance();
+
+        $this->cancelToken();
+        $this->initType();
+
+        // 请求方式检测
+        $method = strtolower($_SERVER['REQUEST_METHOD']);
+        $this->handleOptionsRequest($method);
+
+        //参数过滤
+        $this->filterHandle();
+
+        $this->setMethod($method);
+
+        $this->getVersion();
+    }
+
+    //跨域嗅探,直接返回200
+    protected function handleOptionsRequest($method):void{
+        if($method == 'options'){
+            $this->response('', 1);
+        }
+    }
+
+    protected function setMethod($method):void{
+        if (false === stripos($this->restMethodList, $method)) {
+            // 请求方式非法 则用默认请求方法
+            $method = $this->restDefaultMethod;
+        }
+        $this->_method = $method;
+    }
+
+    //参数过滤;
+    protected function filterHandle(){
+        if(!$this->filter){
+            return;
         }
 
-        //所有接口请求关闭表单令牌设置
-        C('TOKEN_ON', false);
+        foreach($this->filter as $v){
+            $input_value = I($v[0]);
+            if(!$input_value)
+                continue;
 
-        // 资源类型检测
+            switch($v[1]){
+                case 'isExists':
+                    if(D($v[2])->isExists($input_value) === false){
+                        $this->response('数据不存在', 0, '', $v[3]);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    protected function handleMaintenance():void{
+        if($this->getCustomConfig()->getMaintenanceConfig()){
+            $this->response('系统维护中', 0, [], 503);
+        }
+    }
+
+    //所有接口请求关闭表单令牌设置
+    protected function cancelToken():void{
+        C('TOKEN_ON', false);
+    }
+
+    // 资源类型检测
+    protected function initType():void{
         if ('' == __EXT__) {
             // 自动检测资源类型
             $this->_type = $this->getAcceptType();
@@ -49,35 +118,11 @@ class RestController extends CusController{
         } else {
             $this->_type = __EXT__;
         }
-
-        // 请求方式检测
-        $method = strtolower($_SERVER['REQUEST_METHOD']);
-        //跨域嗅探,直接返回200
-        if($method == 'options'){
-            $this->response('', 1);
-        }
-
-        //$this->checkDBContVersion();
-
-        //参数过滤
-        $this->filterHandle();
-
-        if (false === stripos($this->restMethodList, $method)) {
-            // 请求方式非法 则用默认请求方法
-            $method = $this->restDefaultMethod;
-        }
-        $this->_method = $method;
-
-        $this->getVersion();
-
-        //匹配
     }
 
     public function index(){
         $this->route();
     }
-
-
 
     /**
      * REST 调用
@@ -99,7 +144,7 @@ class RestController extends CusController{
             if(!$this->noAuthorization || !in_array($method, $this->noAuthorization)){
                 $this->auth($method);
             }
-            $this->$func();
+            $this->execFun($func);
             exit();
         }
         else{
@@ -107,6 +152,22 @@ class RestController extends CusController{
         }
     }
 
+    protected function response($message, $status, $data = '', $code = 200, array $extra_res_data = []) {
+        $this->sendHttpStatus($code);
+        $return_data['status'] = $status;
+        $return_data['info'] = $message;
+        $return_data['data'] = $data;
+        if (!empty($extra_res_data)){
+            $return_data = array_merge($return_data, $extra_res_data);
+        }
+        qs_exit($this->encodeData($return_data,strtolower($this->_type)));
+    }
+
+    protected function execFun($func){
+        $this->fun_runner_cls = new FuncRunner($this, $func, $this->cache_strategy[$func]??[]);
+        $res = $this->fun_runner_cls->exec();
+        $this->response($res->message, $res->status, $res->data, $res->code, $res->extra_res_data);
+    }
 
     /**
      * 获取当前请求的Accept头信息
@@ -217,7 +278,7 @@ class RestController extends CusController{
         if(empty($data))  return '';
         if('json' == $type) {
             // 返回JSON数据格式到客户端 包含状态信息
-            C("QSCMFAPI_HTML_DECODE_RES", null, false) && $data = $this->_htmlDecode($data);
+            $this->getCustomConfig()->getHtmlDecodeResConfig() && $data = $this->_htmlDecode($data);
             $data = json_encode($data);
         }elseif('xml' == $type){
             // 返回xml格式数据
@@ -254,56 +315,21 @@ class RestController extends CusController{
         $type = strtolower($type);
         if(isset($this->restOutputType[$type])) //过滤content_type
             header('Content-Type: '.$this->restOutputType[$type].'; charset='.$charset);
-        if(C('QSCMFAPI_CORS', null, '*')){
-            header("Access-Control-Allow-Origin:". C('QSCMFAPI_CORS', null, '*'));
+        if($cors_config = $this->getCustomConfig()->getCorsConfig()){
+            header("Access-Control-Allow-Origin:". $cors_config);
             header("Access-Control-Allow-Headers:*");
             header("Access-Control-Allow-Methods:*");
         }
     }
 
-    protected function response($message, $status, $data = '', $code = 200, array $extra_res_data = []) {
-        $this->sendHttpStatus($code);
-        $return_data['status'] = $status;
-        $return_data['info'] = $message;
-        $return_data['data'] = $data;
-        if(CusSession::$send_flg){
-            $return_data['sid'] = CusSession::$sid;
-        }
-        if (!empty($extra_res_data)){
-            $return_data = array_merge($return_data, $extra_res_data);
-        }
-        qs_exit($this->encodeData($return_data,strtolower($this->_type)));
+    abstract protected function auth(string $action_name);
+    abstract protected function getConfigData():array;
+
+    protected function initCustomConfig():CustomConfig{
+        return CustomConfig::create($this->getConfigData());
     }
 
-    protected function auth($action_name){
-        $id = CusSession::get(C('QSCMFAPI_AUTH_ID', null, 'qscmfapi_auth_id'));
-        $user_info = D(C('QSCMFAPI_REST_USER_MODEL'))->where([C('QSCMFAPI_AUTH_ID_COLUMN') => $id])->find();
-        if(!$user_info){
-            $this->response('未登录', 0, '', 401);
-        }
+    public function getCustomConfig():CustomConfig{
+        return $this->custom_config_obj;
     }
-
-
-    protected function filterHandle(){
-        if(!$this->filter){
-            return;
-        }
-
-        foreach($this->filter as $v){
-            $input_value = I($v[0]);
-            if(!$input_value)
-                continue;
-
-            switch($v[1]){
-                case 'isExists':
-                    if(D($v[2])->isExists($input_value) === false){
-                        $this->response('数据不存在', 0, '', $v[3]);
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
 }
