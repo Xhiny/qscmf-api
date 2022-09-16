@@ -9,6 +9,7 @@ class QscmfApiCommonProvider implements Provider {
     public function register(){
         $this->addHook();
         RegisterContainer::registerController('extendApi','Help', HelpController::class);
+        RegisterContainer::registerController('extendApi','ClearApiCache', ClearApiCacheController::class);
     }
 
     protected function addHook(){
