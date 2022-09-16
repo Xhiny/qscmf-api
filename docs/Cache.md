@@ -143,3 +143,22 @@
 
 如缓存前缀*prefix*为*qs_cmf*，模块为*Api*，控制器*DemoController*的缓存键值：
 *qs_cmf_Api_Controller_DemoController*
+
+
+#### 设置值
+
+设置值可以在 app/Common/Conf/config.php 里设置
+
+| 设置值                      | 说明               | 默认值                                                       |
+| :-------------------------- |:-----------------| :----------------------------------------------------------- |
+| QSCMFAPI_CACHE_DIR        | 记录使用了缓存机制Api的文件夹 | [ROOT_PATH . '/app/Api/Controller'] |
+
+
+#### 手动清空缓存值
+```text
+清除设置值 QSCMFAPI_CACHE_DIR 的目录下的所有缓存值 
+```
+```php
+// 需在 CLI Mode 执行脚本
+// php www/index.php /ExtendApi/ClearApiCache/clear
+```

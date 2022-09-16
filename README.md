@@ -55,7 +55,7 @@ composer require quansitech/qscmf-api
 
 #### 设置值
 
-设置值可以在 app/Common/Conf/config.php
+设置值可以在 app/Common/Conf/config.php 里设置
 
 | 设置值                      | 说明                      | 默认值                                                       |
 | :-------------------------- | :------------------------ | :----------------------------------------------------------- |
