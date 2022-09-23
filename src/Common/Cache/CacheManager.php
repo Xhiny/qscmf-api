@@ -41,7 +41,8 @@ class CacheManager
     }
 
     public function hGetWithExpire($name, $key){
-        $res = $this->redis->eval($this->hGetValidKeyByLua($name, $key));
+        $name = $this->getPrefix().$name;
+        $res = $this->redis->eval($this->hGetValidKeyByLua(), [$name, $key], 1);
         if ($res === 0){
             return false;
         }else{
@@ -49,10 +50,9 @@ class CacheManager
         }
     }
 
-    protected function hGetValidKeyByLua($name, $key){
-        $name = $this->getPrefix().$name;
+    protected function hGetValidKeyByLua(){
         return <<<LUA
-local member_value = redis.call('hGet', '{$name}','{$key}');
+local member_value = redis.call('hGet', KEYS[1], ARGV[1]);
 if member_value then 
     local expire = string.match(member_value,"\"expire\":([0-9]+)",0);
     local time_arr = redis.call('TIME');
@@ -61,7 +61,7 @@ if member_value then
     if is_valid then
         return member_value;
     else
-        redis.call('hDel', '{$name}','{$key}');
+        redis.call('hDel', KEYS[1], ARGV[1]);
         return 0;
     end
 else
