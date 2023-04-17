@@ -15,6 +15,7 @@ class QscmfApiCommonProvider implements Provider {
     protected function addHook(){
         \Think\Hook::add('action_end', 'QscmfApiCommon\\Behaviors\\ClearApiCacheBehavior');
         \Think\Hook::add('after_insert', 'QscmfApiCommon\\Behaviors\\AfterInsertCollectBehavior');
+        \Think\Hook::add('after_insert_all', 'QscmfApiCommon\\Behaviors\\AfterInsertCollectBehavior');
         \Think\Hook::add('after_update', 'QscmfApiCommon\\Behaviors\\AfterUpdateCollectBehavior');
         \Think\Hook::add('after_delete', 'QscmfApiCommon\\Behaviors\\AfterDeleteCollectBehavior');
     }
