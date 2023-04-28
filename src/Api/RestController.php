@@ -42,6 +42,24 @@ class RestController extends ARestController {
         if(!$user_info){
             $this->response('未登录', 0, '', 401);
         }
+
+        if($this->_role_auth && self::$role_handler){
+            $role = call_user_func(self::$role_handler);
+            if(!$role){
+                $this->response('没有访问权限', 0, '', 403);
+            }
+            if($this->_role_auth[0] && !array_intersect($role, $this->_role_auth)){
+                $this->response('没有访问权限', 0, '', 403);
+            }
+
+            if(isset($this->_role_auth[$action_name]) && !array_intersect($role, $this->_role_auth[$action_name])){
+                $this->response('没有访问权限', 0, '', 403);
+            }
+        }
+    }
+
+    public static function registerRoleHandler(callable $handler){
+        self::$role_handler = $handler;
     }
 
 }

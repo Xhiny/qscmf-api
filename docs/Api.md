@@ -131,3 +131,60 @@ class DemoController extends RestController
 | :---------------------- |:------------------------| :----- |
 | QSCMFAPI_MP_MAINTENANCE | 关闭接口的请求                 |        |
 | USE_API_CACHE | 缓存机制开关，false 关闭 true 开启 |        |
+
+
+#### 设置接口角色权限
+
+开启角色验证，必须为接口定义_role_auth属性及通过 \QscmfApi\RestController::registerRoleHandler() 方法注册获取角色方法才会生效
+
+开启后，接口会自动完成用户角色权限的验证，没有权限统一返回403
+
+支持一个多角色定义，只要符合其中一种角色，及可通过验证
+
+实例代码
+```php
+//在AppInitBehavior里注册获取角色的方法, person_id
+\QscmfApi\RestController::registerRoleHandler(function(){
+      $person_id = CusSession::get(C("QSCMFAPI_AUTH_ID"));
+
+      $teacher = D("Teacher")->where(['person_id' => $person_id, 'status' => DBCont::NORMAL_STATUS])->find();
+      if($teacher){
+          return [PersonRole::TEACHER];
+      }
+      else{
+          return [PersonRole::GUEST];
+      }
+});
+```
+
+有两种定义_role_auth的方法，第一种
+```php
+class DemoController extends RestController{
+
+    //所有类型的接口（get,post,put,delete）都要验证是否包含TEACHER角色
+    protected $_role_auth = [
+        PersonRole::TEACHER
+    ];
+
+    public function gets(){
+
+        $this->response('成功', 1, 'ok');
+    }
+}
+```
+
+第二种
+```php
+class DemoController extends RestController{
+
+    //只有gets类型的请求才要求验证TEACHER角色
+    protected $_role_auth = [
+        'gets' => [PersonRole::TEACHER]
+    ];
+
+    public function gets(){
+
+        $this->response('成功', 1, 'ok');
+    }
+}
+```
