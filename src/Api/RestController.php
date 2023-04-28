@@ -7,6 +7,9 @@ class RestController extends ARestController {
 
     use TCusSession;
 
+    protected $_role_auth;
+    protected static $role_handler;
+
     public function __construct()
     {
         $this->_initCusSession();
