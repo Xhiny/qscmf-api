@@ -127,3 +127,13 @@ class IndexController extends \QscmfCrossApi\RestController
 | :---------------------- | :------------- | :----- |
 | QSCMF_CROSS_API_MAINTENANCE | 关闭接口的请求 |        |
 | USE_CROSS_API_CACHE | 缓存机制开关，false 关闭 true 开启 |        |
+
+
+### 访问接口
+#### 用法
++ 向服务端获取token
+```
+服务端管理客户端接口权限时，自动生成此值
+从数据表 DB_PREFIX_cross_api_register 中获取对应客户端的id字段值即可
+```
++ 在每个请求头的Authorization中加入token
