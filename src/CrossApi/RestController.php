@@ -2,7 +2,7 @@
 namespace QscmfCrossApi;
 
 use QscmfApiCommon\ARestController;
-use QscmfApiCommon\Lib\HmacHelper;
+use QscmfApiCommon\Hmac\HmacContext;
 use QscmfCrossApi\Model\CrossApiRegisterModel;
 
 class RestController extends ARestController {
@@ -11,9 +11,10 @@ class RestController extends ARestController {
         parent::__construct();
         
         // 初始化 HMAC 密钥解析器
-        HmacHelper::setSecretKeyResolver(function($appId) {
+        HmacContext::setSecretKeyResolver(function($appId) {
             return $this->getSecretKey($appId);
         });
+
     }
 
     protected function getConfigData():array{
@@ -23,7 +24,6 @@ class RestController extends ARestController {
             'cache' => env('USE_CROSS_API_CACHE'),
             'html_decode_res' => true,
             'hmac_enabled' => env('QSCMF_CROSS_API_HMAC_ENABLED', false), // 添加 HMAC 启用配置
-            'hmac_header_keys' => env('QSCMF_CROSS_API_HMAC_HEADER_KEYS', []), // 添加 HMAC Header key配置
         ];
     }
 
@@ -40,18 +40,27 @@ class RestController extends ARestController {
 
     protected function auth($action_name){
         $config = $this->getConfigData();
-        $headerKeys = $config['hmac_header_keys'];
         
         if ($config['hmac_enabled'] === true) {
             // 使用新的HMAC验证方法
-            $this->verifyHmac($headerKeys);
-        } else {
-            // 原有验证模式
+            [$r, $id] = $this->verifyHmac();
+
+            $key = [$id, MODULE_NAME, CONTROLLER_NAME, $action_name];
+            $cache_key = 'qscmf_cross_api_method_list_'.implode('_', $key);
+            $fn = \Qscmf\Utils\Libs\Common::cached(function($id, $module_name, $controller_name, $action_name){
+                return (new CrossApiRegisterModel())
+                ->isExistsApiById($id, $module_name, $controller_name,$action_name);
+
+            }, 3600, $cache_key);
+
+            if(!$fn($id, MODULE_NAME, CONTROLLER_NAME, $action_name)){
+                $this->response('没有访问权限', 0, '', 403);
+            }
+        }else{
             $id = getallheaders()['Authorization'] ?? '';
             if (!$id) {
                 $this->response('缺少认证信息', 0, '', 401);
-            }
-            
+            }      
             $intranet_api_register_model = new CrossApiRegisterModel();
             if(!$intranet_api_register_model->isExistsApiById($id, MODULE_NAME, CONTROLLER_NAME, $action_name)){
                 $this->response('没有访问权限', 0, '', 403);

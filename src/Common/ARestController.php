@@ -3,7 +3,7 @@
 namespace QscmfApiCommon;
 
 use QscmfApiCommon\Cache\FuncRunner;
-use QscmfApiCommon\Lib\HmacHelper;
+use QscmfApiCommon\Hmac\HmacContext;
 
 abstract class ARestController extends \Think\Controller
 {
@@ -336,14 +336,14 @@ abstract class ARestController extends \Think\Controller
 
     /**
      * 验证HMAC签名
-     * 
-     * @param array $headerKeys 自定义header键名映射
-     * @throws \Exception 验证失败时抛出异常
      */
-    protected function verifyHmac(array $headerKeys = []) {        
-        if (!HmacHelper::verify($headerKeys)) {
+    protected function verifyHmac(array $headerKeys = []) {    
+        [$r, $appid] = HmacContext::verify($headerKeys);   
+        if (!$r) {
             $this->response('签名验证失败', 0, '', 403);
         }
+
+        return [$r, $appid];
     }
     
 }
