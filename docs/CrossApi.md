@@ -127,7 +127,34 @@ class IndexController extends \QscmfCrossApi\RestController
 | :---------------------- | :------------- | :----- |
 | QSCMF_CROSS_API_MAINTENANCE | 关闭接口的请求 |        |
 | USE_CROSS_API_CACHE | 缓存机制开关，false 关闭 true 开启 |        |
+| QSCMF_CROSS_API_HMAC_ENABLED | HMAC签名开关，false 关闭 true 开启 |  false  |
 
+
+#### 使用HMAC
+[使用HMAC说明](./Hmac.md)
+
+
+#### 某个系统需要启用 HMAC签名
+* ！！！ 注意数据迁移生成后只会展示一次原始密钥，需要自行保存，数据表保存的是加密后的。 *
+
+```php
+public function up()
+{
+    // 添加接口
+    // $sign 使用此服务的系统标识
+    // $name 使用此服务的系统名称（第一次新增时必填）
+    $register = new \QscmfCrossApi\RegisterMethod('library_local','本地');
+    // 使用 HMAC 签名
+    $register->setUseHmac(true);
+    
+    // 接口路由信息
+    // $module_name, $controller_name, $action_name
+    $register->addMethod('IntranetApi', 'Index', 'gets');
+    $register->addMethod('IntranetApi', 'Index', 'update');
+    $register->register();
+
+}
+```
 
 ### 访问接口
 #### 用法

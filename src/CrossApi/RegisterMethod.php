@@ -87,12 +87,11 @@ class RegisterMethod
          $msg = date('Y-m-d H:i:s').' 注册成功：'.PHP_EOL
                 .'name:'.$name.PHP_EOL
                 .'appid:'.$id.PHP_EOL.'key:'.$key.PHP_EOL
-                .'只会展示一次，请保存'.PHP_EOL;
+                .'只会展示一次，请另存'.PHP_EOL;
 
+        $file =  LARA_DIR. DIRECTORY_SEPARATOR. 'storage/logs/'.date('Ymd').'_qscmf_api_register_sys.log';
         fwrite(STDOUT, $msg);
-        if(class_exists(\Think\Log::class)){
-            \Think\Log::write($msg);
-        }
+        file_put_contents($file, $msg, FILE_APPEND);
     }
 
     protected function genKey():array{
