@@ -31,7 +31,7 @@ class HmacContext {
     }
     
     private static function init(): void {
-        $type = C('HMAC_HANDLER_TYPE', null, self::HANDLER_DEFAULT);
+        $type = C('QSCMFAPI_HMAC_HANDLER_TYPE', null, self::HANDLER_DEFAULT);
         $class = strpos($type, '\\') ? $type : __NAMESPACE__ . '\\' . $type;
         
         if (class_exists($class)) {

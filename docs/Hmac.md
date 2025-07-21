@@ -18,12 +18,12 @@ HMAC (Hash-based Message Authentication Code) 是一种基于密钥的报文验�
 
 | 设置值                  | 说明           | 默认值 |
 | :---------------------- | :------------- | :----- |
-| QSCMF_API_ENCRYPTION_KEY |  用于加密密钥的key，长度为32位  |   |
+| QSCMFAPI_ENCRYPTION_KEY |  用于加密密钥的key，长度为32位  |   |
 
 
 ```bash
 # 将结果复制到 .env 文件
-php -r "echo 'QSCMF_API_ENCRYPTION_KEY=' . bin2hex(random_bytes(32)) . PHP_EOL;"
+php -r "echo 'QSCMFAPI_ENCRYPTION_KEY=' . bin2hex(random_bytes(32)) . PHP_EOL;"
 ```
 
 
@@ -32,13 +32,13 @@ php -r "echo 'QSCMF_API_ENCRYPTION_KEY=' . bin2hex(random_bytes(32)) . PHP_EOL;"
    // config.php
 
     // 跳过验证的IP列表
-   'HMAC_IP_WHITELIST' => [], 
+   'QSCMFAPI_HMAC_IP_WHITELIST' => [], 
 
     // 最大时间偏差(秒)
-   'HMAC_TOLERANCE' => 300, 
+   'QSCMFAPI_HMAC_TOLERANCE' => 300, 
 
    // Header 头字段映射配置，默认值如下，支持自定义
-   'HMAC_HEADER_MAP' => [
+   'QSCMFAPI_HMAC_HEADER_MAP' => [
         'appid' => 'X-H-Api-Appid',
         'timestamp' => 'X-H-Api-Timestamp',
         'nonce' => 'X-H-Api-Nonce',

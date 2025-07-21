@@ -12,7 +12,7 @@ trait THmac
 
     protected function isWhitelisted(): bool {
         $ip = $_SERVER['REMOTE_ADDR'];
-        $whitelist = C('QSCMF_API_HMAC_IP_WHITELIST', null, []);
+        $whitelist = C('QSCMFAPI_HMAC_IP_WHITELIST', null, []);
 
         return in_array($ip, (array)$whitelist);
     }
@@ -81,7 +81,7 @@ trait THmac
     }
 
     protected function getHeaderMap() : array {
-        return (array)C('QSCMF_API_HMAC_HEADER_MAP', null, [
+        return (array)C('QSCMFAPI_HMAC_HEADER_MAP', null, [
             'appid' => 'X-H-Api-Appid',
             'timestamp' => 'X-H-Api-Timestamp',
             'nonce' => 'X-H-Api-Nonce',
@@ -90,7 +90,7 @@ trait THmac
     }
 
     protected function getTimeTolerance() : int {
-        return (int)C('QSCMF_API_HMAC_TOLERANCE', null, 300);
+        return (int)C('QSCMFAPI_HMAC_TOLERANCE', null, 300);
     }
 
 }

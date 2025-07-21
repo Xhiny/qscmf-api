@@ -10,7 +10,7 @@ class Encryper
 
     public function __construct()
     {
-        $master_key = env('QSCMF_API_ENCRYPTION_KEY') ?: '';
+        $master_key = env('QSCMFAPI_ENCRYPTION_KEY') ?: '';
 
         // 确保主密钥是期望的长度 (32字节, 64个十六进制字符)
         if (strlen(hex2bin($master_key)) !== 32) {
