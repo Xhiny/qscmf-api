@@ -135,20 +135,16 @@ class IndexController extends \QscmfCrossApi\RestController
 
 
 #### 某个系统需要启用 HMAC签名
-* ！！！ 注意数据迁移生成后只会展示一次原始密钥，需要自行保存，数据表保存的是加密后的。 *
+**！！！ 注意数据迁移生成后只会展示一次原始密钥，需要自行保存，数据表保存的是加密后的**
 
 ```php
 public function up()
 {
-    // 添加接口
-    // $sign 使用此服务的系统标识
-    // $name 使用此服务的系统名称（第一次新增时必填）
+    
     $register = new \QscmfCrossApi\RegisterMethod('library_local','本地');
     // 使用 HMAC 签名
     $register->setUseHmac(true);
     
-    // 接口路由信息
-    // $module_name, $controller_name, $action_name
     $register->addMethod('IntranetApi', 'Index', 'gets');
     $register->addMethod('IntranetApi', 'Index', 'update');
     $register->register();
