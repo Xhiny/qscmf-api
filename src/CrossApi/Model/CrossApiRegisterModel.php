@@ -20,4 +20,8 @@ class CrossApiRegisterModel extends \Qscmf\Core\QsListModel
         }
     }
 
+    public function fetchById($id, $field){
+        return $this->where(['id' => $id])->field($field)->find();
+    }
+
 }

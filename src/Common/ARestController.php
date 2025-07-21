@@ -3,10 +3,12 @@
 namespace QscmfApiCommon;
 
 use QscmfApiCommon\Cache\FuncRunner;
+use QscmfApiCommon\Hmac\THmacController;
 
 abstract class ARestController extends \Think\Controller
 {
     use ValidateHelper;
+    use THmacController;
 
     protected FuncRunner $fun_runner_cls; // 接口执行类
     protected array $cache_strategy = []; // 缓存策略
@@ -332,4 +334,5 @@ abstract class ARestController extends \Think\Controller
     public function getCustomConfig():CustomConfig{
         return $this->custom_config_obj;
     }
+    
 }
