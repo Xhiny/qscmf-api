@@ -42,6 +42,10 @@ class RegisterMethod
         return Str::uuid()->getHex();
     }
 
+    protected function genSecretKey(){
+        return Str::uuid()->getHex();
+    }
+
     public function addMethod($module_name, $controller_name, $action_name){
         $this->add_data[] = $this->combineMethod($module_name, $controller_name, $action_name);
         return $this;
@@ -113,15 +117,11 @@ class RegisterMethod
                 'create_date' => microtime(true)
             ];
             if($this->use_hmac){
-                [$raw_key, $secret_key] = $this->genKey();
-                $insert_data['secret_key'] = $secret_key;
+                $insert_data['secret_key'] = $this->genSecretKey();
             }
 
             $r = DB::table(RegisterMethod::getTableName())->insert($insert_data);
-            if($r && $this->use_hmac){
-                $this->showRegister($this->name, $id, $raw_key);                
-            }
-
+            
             return $r;
         }
     }
@@ -135,16 +135,10 @@ class RegisterMethod
         ];
 
         if($this->use_hmac && empty($data->secret_key)){
-            $log = true;
-            [$raw_key, $secret_key] = $this->genKey();
-            $update_data['secret_key'] = $secret_key;
+            $update_data['secret_key'] = $this->genSecretKey();
         }
 
         $r = DB::table(RegisterMethod::getTableName())->where('sign', $data->sign)->update($update_data);
-
-         if($r && $log){
-            $this->showRegister($data->name, $data->id, $raw_key);
-        }
 
         return $r;
     }

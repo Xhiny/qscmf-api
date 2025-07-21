@@ -83,7 +83,7 @@ class RestController extends ARestController {
             $this->response('应用未授权', 0, '', 403);
         }
         
-        return (new Encryper())->decrypt($record['secret_key']);
+        return $record['secret_key'];
     }
 
 }

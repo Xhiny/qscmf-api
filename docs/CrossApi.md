@@ -135,8 +135,6 @@ class IndexController extends \QscmfCrossApi\RestController
 
 
 #### 某个系统需要启用 HMAC签名
-**！！！ 注意数据迁移生成后只会展示一次原始密钥，需要自行保存，数据表保存的是加密后的**
-
 ```php
 public function up()
 {
