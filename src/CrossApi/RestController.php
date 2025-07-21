@@ -2,6 +2,7 @@
 namespace QscmfCrossApi;
 
 use QscmfApiCommon\ARestController;
+use QscmfApiCommon\Encryper;
 use QscmfApiCommon\Hmac\HmacContext;
 use QscmfCrossApi\Model\CrossApiRegisterModel;
 
@@ -82,7 +83,7 @@ class RestController extends ARestController {
             $this->response('应用未授权', 0, '', 403);
         }
         
-        return $record['secret_key'];
+        return (new Encryper())->decrypt($record['secret_key']);
     }
 
 }
