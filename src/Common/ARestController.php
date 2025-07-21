@@ -337,7 +337,7 @@ abstract class ARestController extends \Think\Controller
     /**
      * 验证HMAC签名
      */
-    protected function verifyHmac(array $headerKeys = []) {    
+    protected function verifyHmac(array $headerKeys = []):array {    
         [$r, $appid] = HmacContext::verify($headerKeys);   
         if (!$r) {
             $this->response('签名验证失败', 0, '', 403);

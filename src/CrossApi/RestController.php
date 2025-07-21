@@ -42,7 +42,7 @@ class RestController extends ARestController {
         $config = $this->getConfigData();
         
         if ($config['hmac_enabled'] === true) {
-            // 使用新的HMAC验证方法
+            // 使用 HMAC 验证方法
             [$r, $id] = $this->verifyHmac();
 
             $key = [$id, MODULE_NAME, CONTROLLER_NAME, $action_name];
