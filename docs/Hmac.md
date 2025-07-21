@@ -53,16 +53,29 @@ php -r "echo 'QSCMF_API_ENCRYPTION_KEY=' . bin2hex(random_bytes(32)) . PHP_EOL;"
 + HTTP 请求头
     | 字段       | 类型      | 必选  | 描述  | 示例                 |
     | -------- | ------- | --- | ---- | ------------------ |
-    | X-H-Api-Appid | string | 是   | appid   | your_appid     |
-    | X-H-Api-Timestamp   | integer  | 是   | 当前 Unix 时间戳（秒），误差5秒之内 | 1678886400     |
+    | X-H-Api-Appid | string | 是   | 应用ID   | your_appid     |
+    | X-H-Api-Timestamp   | integer  | 是   | 当前 Unix 时间戳（秒） | 1678886400     |
     | X-H-Api-Nonce | string   | 是   | 32位以内的随机字符串 | a8f5f167255d44a5b5f73a13f7a0de79 |
     | X-H-Api-Sign | string   | 是   | 本次请求的签名，详见下文 | ASDGAGFDGDA... |
 
-+ X-H-Api-Sign 签名生成
-   + 除 key 外，对其他字段进行字典序排序；
-   + 拼接 key ；
-   + 使用 HMAC-SHA256 签名算法加密；
-   + 转为大写
+#### 签名生成步骤
+
+1. 准备参数：
+   - appid
+   - timestamp
+   - nonce
+   - 服务端分配的key
+
+2. 按字典序排序参数
+
+3. 拼接参数和key：
+   ```
+   appid=your_app_id&nonce=random_string&timestamp=1678886400&key=your_key
+   ```
+
+4. 使用HMAC-SHA256算法生成签名
+
+5. 转为大写作为最终签名
 
 
 ### 自定义HMAC签名算法
