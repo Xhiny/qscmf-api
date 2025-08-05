@@ -18,13 +18,8 @@ HMAC (Hash-based Message Authentication Code) 是一种基于密钥的报文验�
 
 | 设置值                  | 说明           | 默认值 |
 | :---------------------- | :------------- | :----- |
-| QSCMFAPI_ENCRYPTION_KEY |  用于加密密钥的key，长度为32位  |   |
+| QSCMFAPI_HMAC_TEST |  压测标识，开启后可以绕过签名拦截，false 关闭 true 开启 |  false  |
 
-
-```bash
-# 将结果复制到 .env 文件
-php -r "echo 'QSCMFAPI_ENCRYPTION_KEY=' . bin2hex(random_bytes(32)) . PHP_EOL;"
-```
 
 
 #### 配置参数
@@ -43,7 +38,10 @@ php -r "echo 'QSCMFAPI_ENCRYPTION_KEY=' . bin2hex(random_bytes(32)) . PHP_EOL;"
         'timestamp' => 'X-H-Api-Timestamp',
         'nonce' => 'X-H-Api-Nonce',
         'signature' => 'X-H-Api-Sign'
-   ]
+   ],
+
+   // 执行签名算法，但是不拦截 sign
+   'QSCMFAPI_HMAC_SIGN_WHITELIST' => [], 
 
    ```
 
