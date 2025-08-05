@@ -14,7 +14,7 @@ trait THmac
         $ip = $_SERVER['REMOTE_ADDR'];
         $whitelist = C('QSCMFAPI_HMAC_IP_WHITELIST', null, []);
 
-        return in_array($ip, (array)$whitelist);
+        return in_array($ip, (array)$whitelist, true);
     }
     
     protected function getRedis():\Think\Cache {
@@ -93,4 +93,26 @@ trait THmac
         return (int)C('QSCMFAPI_HMAC_TOLERANCE', null, 300);
     }
 
+     protected function isTest():bool{
+        return env('QSCMFAPI_HMAC_TEST',  false) === true;
+    }
+
+     protected function isWhiteSign(string $sign): bool {
+        $whitelist = C('QSCMFAPI_HMAC_SIGN_WHITELIST', null, []);
+
+        return in_array($sign, (array)$whitelist, true);
+    }
+
+    protected function checkTestSign(string $sign):bool{
+        if(!$this->isTest()){
+            return false;
+        }
+
+        if(!$this->isWhiteSign($sign)){
+            return false;
+        }
+
+        return true;
+    }
+    
 }
