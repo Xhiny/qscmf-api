@@ -24,9 +24,15 @@ class AlterCrossApiId extends Migration
      */
     public function up()
     {
-        Schema::table(\QscmfCrossApi\RegisterMethod::getTableName(), function (Blueprint $table) {
-            $table->string('id', 50)->primary()->change();
-        });
+        $table = \QscmfCrossApi\RegisterMethod::getTableName();
+        $isPrimaryKey = DB::select(
+            "SHOW KEYS FROM `{$table}` WHERE Key_name = 'PRIMARY' AND Column_name = 'id'"
+        );
+        if(empty($isPrimaryKey)){
+            Schema::table($table, function (Blueprint $table) {
+                $table->string('id', 50)->primary()->change();
+            });
+        }
     }
 
     /**
