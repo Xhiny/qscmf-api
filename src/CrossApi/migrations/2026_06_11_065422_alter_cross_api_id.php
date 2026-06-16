@@ -25,10 +25,9 @@ class AlterCrossApiId extends Migration
     public function up()
     {
         $table = \QscmfCrossApi\RegisterMethod::getTableName();
-        $isPrimaryKey = DB::select(
-            "SHOW KEYS FROM `{$table}` WHERE Key_name = 'PRIMARY' AND Column_name = 'id'"
-        );
-        if(empty($isPrimaryKey)){
+        $isPrimaryKey = Schema::getConnection()->getDoctrineSchemaManager()->listTableIndexes($table);
+        $columns = $isPrimaryKey['primary']->getColumns();
+        if(!in_array('id', $columns)){
             Schema::table($table, function (Blueprint $table) {
                 $table->string('id', 50)->primary()->change();
             });
