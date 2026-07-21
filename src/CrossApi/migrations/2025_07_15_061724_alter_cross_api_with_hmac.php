@@ -28,7 +28,7 @@ class AlterCrossApiWithHmac extends Migration
         Schema::table(\QscmfCrossApi\RegisterMethod::getTableName(), function (Blueprint $table) {
             $table->tinyInteger('status')->default(1)->comment('状态， 0禁用 1启用');
             $table->string('secret_key', 255)->default('')->comment('密钥');
-            $table->timestamp('update_date', 4)->default(DB::raw('CURRENT_TIMESTAMP(4) ON UPDATE CURRENT_TIMESTAMP(4)'));
+            $table->timestamp('update_date')->useCurrent()->useCurrentOnUpdate()->comment('更新时间');
         });
         
     }
